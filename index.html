@@ -426,16 +426,15 @@ async function upsertP(id,name,status,li,site){
   _setL(id,name,status,li,site);renderBadges();updateC();
   if(!sb){saveLocal();return}
   try{
-    // Tenta update primeiro, se não encontrar faz insert
-    const{data:existing}=await sb.from("presencas").select("id").eq("evento_id",id).eq("nome",name).single();
-    if(existing){
-      const{error}=await sb.from("presencas").update({status,linkedin:li||"",site_empresa:site||""}).eq("evento_id",id).eq("nome",name);
-      if(error)throw error;
-    }else{
-      const{error}=await sb.from("presencas").insert({evento_id:id,nome:name,status,linkedin:li||"",site_empresa:site||""});
-      if(error)throw error;
-    }
-  }catch(e){console.error(e);toast("Erro ao salvar 😕","⚠️")}
+    const{error}=await sb.from("presencas").upsert(
+      {evento_id:id,nome:name,status,linkedin:li||"",site_empresa:site||""},
+      {onConflict:"evento_id,nome",ignoreDuplicates:false}
+    );
+    if(error)throw error;
+  }catch(e){
+    console.error("UPSERT ERROR:",JSON.stringify(e));
+    toast("Erro: "+( e.message||e.code||JSON.stringify(e)),"⚠️");
+  }
 }
 async function delP(id,name){
   _delL(id,name);renderBadges();updateC();
