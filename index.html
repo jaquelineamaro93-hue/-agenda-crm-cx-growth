@@ -1,338 +1,237 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agenda CRM, CX & Growth 2026–2027</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
-    html { scroll-behavior:smooth; }
-    body { font-family:'DM Sans',sans-serif; background:#080A0F; color:#CBD5E1; min-height:100vh; overflow-x:hidden; }
-    ::-webkit-scrollbar { width:5px; } ::-webkit-scrollbar-track { background:#0D1117; } ::-webkit-scrollbar-thumb { background:#252D40; border-radius:3px; }
-    h1,h2,h3,.fd { font-family:'Syne',sans-serif; }
-    .header-glow { background:radial-gradient(ellipse 90% 55% at 50% -5%, rgba(232,67,26,.22) 0%, transparent 65%); }
-    .event-card { background:linear-gradient(135deg,#13181F 0%,#0D1117 100%); border:1px solid rgba(255,255,255,.07); transition:border-color .22s,transform .18s,box-shadow .22s; position:relative; }
-    .event-card:hover { border-color:rgba(232,67,26,.28); transform:translateY(-2px); box-shadow:0 14px 44px rgba(0,0,0,.55),0 0 0 1px rgba(232,67,26,.09); }
-    .area-crm       { color:#60A5FA; border-color:rgba(96,165,250,.25);   background:rgba(96,165,250,.08); }
-    .area-cx        { color:#A78BFA; border-color:rgba(167,139,250,.25);  background:rgba(167,139,250,.08); }
-    .area-growth    { color:#34D399; border-color:rgba(52,211,153,.25);   background:rgba(52,211,153,.08); }
-    .area-ecommerce { color:#FB923C; border-color:rgba(251,146,60,.25);   background:rgba(251,146,60,.08); }
-    .area-marketing { color:#F472B6; border-color:rgba(244,114,182,.25);  background:rgba(244,114,182,.08); }
-    .area-inovacao  { color:#22D3EE; border-color:rgba(34,211,238,.25);   background:rgba(34,211,238,.08); }
-    .area-social    { color:#818CF8; border-color:rgba(129,140,248,.25);  background:rgba(129,140,248,.08); }
-    .area-multi     { color:#FCD34D; border-color:rgba(252,211,77,.25);   background:rgba(252,211,77,.08); }
-    .area-default   { color:#94A3B8; border-color:rgba(148,163,184,.20);  background:rgba(148,163,184,.06); }
-    .tipo-pill { font-size:.64rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase; padding:2px 8px; border-radius:99px; border:1px solid; }
-    .tipo-plain { color:#64748B; border-color:rgba(100,116,139,.20); background:rgba(100,116,139,.06); }
-    .preco-free   { color:#34D399; border-color:rgba(52,211,153,.25);  background:rgba(52,211,153,.08); }
-    .preco-pago   { color:#FCD34D; border-color:rgba(252,211,77,.25);  background:rgba(252,211,77,.08); }
-    .preco-stream { color:#22D3EE; border-color:rgba(34,211,238,.25);  background:rgba(34,211,238,.08); }
-    .preco-consul { color:#64748B; border-color:rgba(100,116,139,.20); background:rgba(100,116,139,.06); }
-    .btn-pres { font-size:.68rem; font-weight:600; padding:4px 10px; border-radius:6px; border:1px solid; cursor:pointer; transition:all .16s; white-space:nowrap; user-select:none; background:transparent; font-family:'DM Sans',sans-serif; }
-    .btn-pres:hover { filter:brightness(1.2); }
-    .btn-going  { color:#10B981; border-color:rgba(16,185,129,.30); background:rgba(16,185,129,.07); }
-    .btn-going.active  { color:#fff; border-color:#10B981; background:#10B981; box-shadow:0 0 12px rgba(16,185,129,.35); }
-    .btn-maybe  { color:#F59E0B; border-color:rgba(245,158,11,.28); background:rgba(245,158,11,.07); }
-    .btn-maybe.active  { color:#000; border-color:#F59E0B; background:#F59E0B; box-shadow:0 0 12px rgba(245,158,11,.35); }
-    .btn-no     { color:#64748B; border-color:rgba(100,116,139,.20); background:rgba(100,116,139,.05); }
-    .btn-no.active     { color:#fff; border-color:#64748B; background:rgba(100,116,139,.35); }
-    .badge-going { background:rgba(16,185,129,.13); color:#34D399; border:1px solid rgba(16,185,129,.22); border-radius:99px; padding:2px 9px; font-size:.68rem; font-weight:500; }
-    .badge-maybe { background:rgba(245,158,11,.13); color:#FCD34D; border:1px solid rgba(245,158,11,.22); border-radius:99px; padding:2px 9px; font-size:.68rem; font-weight:500; }
-    #nameModal { display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,.82); backdrop-filter:blur(8px); align-items:center; justify-content:center; }
-    #nameModal.open { display:flex; }
-    .modal-box { background:linear-gradient(135deg,#1E2535 0%,#161B27 100%); border:1px solid rgba(255,255,255,.10); border-radius:16px; padding:32px; width:100%; max-width:420px; box-shadow:0 30px 80px rgba(0,0,0,.7); animation:mIn .24s cubic-bezier(.34,1.56,.64,1); }
-    @keyframes mIn { from{opacity:0;transform:scale(.92) translateY(8px)} to{opacity:1;transform:scale(1) translateY(0)} }
-    .input-field { background:#0D1117; border:1px solid rgba(255,255,255,.12); border-radius:8px; color:#CBD5E1; padding:10px 14px; font-family:'DM Sans',sans-serif; font-size:.9rem; width:100%; transition:border-color .2s; outline:none; }
-    .input-field:focus { border-color:#E8431A; }
-    .input-field::placeholder { color:#374151; }
-    .counter-pill { background:rgba(232,67,26,.11); border:1px solid rgba(232,67,26,.22); color:#FF5A2E; padding:4px 14px; border-radius:99px; font-family:'Syne',sans-serif; font-size:.76rem; font-weight:700; }
-    .ftab { padding:5px 14px; border-radius:99px; font-size:.74rem; font-weight:600; cursor:pointer; transition:all .16s; border:1px solid transparent; color:#4B5563; background:transparent; font-family:'DM Sans',sans-serif; }
-    .ftab:hover { color:#CBD5E1; border-color:rgba(255,255,255,.10); }
-    .ftab.active { background:rgba(232,67,26,.14); border-color:rgba(232,67,26,.30); color:#FF5A2E; }
-    .ldot { width:7px; height:7px; background:#10B981; border-radius:50%; box-shadow:0 0 6px #10B981; animation:pd 2s infinite; display:inline-block; }
-    @keyframes pd { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
-    #toast { position:fixed; bottom:24px; right:24px; z-index:9000; background:#1E2535; border:1px solid rgba(255,255,255,.10); border-radius:10px; padding:11px 17px; font-size:.82rem; color:#CBD5E1; box-shadow:0 8px 30px rgba(0,0,0,.5); opacity:0; transform:translateY(8px); transition:opacity .26s,transform .26s; pointer-events:none; }
-    #toast.show { opacity:1; transform:translateY(0); }
-    .desc { font-size:.78rem; line-height:1.55; color:#4B5563; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-    .month-divider { grid-column:1/-1; font-family:'Syne',sans-serif; font-size:.70rem; font-weight:700; letter-spacing:.10em; text-transform:uppercase; color:#252D40; display:flex; align-items:center; gap:10px; margin-top:8px; }
-    .month-divider::after { content:''; flex:1; height:1px; background:rgba(255,255,255,.05); }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Agenda CRM, CX & Growth 2026–2027</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--navy:#0a303d;--cream:#fffff3;--copper:#be8f63;--copper2:#d4a47a;--slate:#718289;--brown:#8b664b;--dark:#061e28}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--cream);min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--dark)}::-webkit-scrollbar-thumb{background:var(--slate);border-radius:3px}
+h1,h2,h3,.fd{font-family:'Syne',sans-serif}
+.hbg{background:linear-gradient(180deg,var(--dark) 0%,var(--navy) 100%);border-bottom:1px solid rgba(190,143,99,.20)}
+.event-card{background:linear-gradient(135deg,#0f2c38 0%,#0a2330 100%);border:1px solid rgba(113,130,137,.18);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:11px;transition:border-color .22s,transform .18s,box-shadow .22s}
+.event-card:hover{border-color:rgba(190,143,99,.40);transform:translateY(-2px);box-shadow:0 14px 44px rgba(0,0,0,.45),0 0 0 1px rgba(190,143,99,.12)}
+.pill{font-size:.63rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:99px;border:1px solid}
+.a-crm{color:#93C5FD;border-color:rgba(147,197,253,.25);background:rgba(147,197,253,.08)}
+.a-cx{color:#C4B5FD;border-color:rgba(196,181,253,.25);background:rgba(196,181,253,.08)}
+.a-growth{color:#6EE7B7;border-color:rgba(110,231,183,.25);background:rgba(110,231,183,.08)}
+.a-ecom{color:#d4a47a;border-color:rgba(190,143,99,.28);background:rgba(190,143,99,.08)}
+.a-mkt{color:#F9A8D4;border-color:rgba(249,168,212,.25);background:rgba(249,168,212,.08)}
+.a-tech{color:#67E8F9;border-color:rgba(103,232,249,.25);background:rgba(103,232,249,.08)}
+.a-social{color:#A5B4FC;border-color:rgba(165,180,252,.25);background:rgba(165,180,252,.08)}
+.a-multi{color:#FDE68A;border-color:rgba(253,230,138,.25);background:rgba(253,230,138,.08)}
+.a-def,.t-plain{color:#718289;border-color:rgba(113,130,137,.22);background:rgba(113,130,137,.07)}
+.p-free{color:#6EE7B7;border-color:rgba(110,231,183,.25);background:rgba(110,231,183,.08)}
+.p-paid{color:#FDE68A;border-color:rgba(253,230,138,.25);background:rgba(253,230,138,.08)}
+.p-stream{color:#67E8F9;border-color:rgba(103,232,249,.25);background:rgba(103,232,249,.08)}
+.p-ask{color:#718289;border-color:rgba(113,130,137,.20);background:rgba(113,130,137,.06)}
+.btn-pres{font-size:.68rem;font-weight:600;padding:4px 10px;border-radius:6px;border:1px solid;cursor:pointer;transition:all .16s;white-space:nowrap;user-select:none;background:transparent;font-family:'DM Sans',sans-serif}
+.btn-pres:hover{filter:brightness(1.2)}
+.btn-g{color:#10B981;border-color:rgba(16,185,129,.30);background:rgba(16,185,129,.07)}
+.btn-g.on{color:#fff;border-color:#10B981;background:#10B981;box-shadow:0 0 12px rgba(16,185,129,.35)}
+.btn-m{color:#F59E0B;border-color:rgba(245,158,11,.28);background:rgba(245,158,11,.07)}
+.btn-m.on{color:#000;border-color:#F59E0B;background:#F59E0B;box-shadow:0 0 12px rgba(245,158,11,.35)}
+.btn-n{color:#718289;border-color:rgba(113,130,137,.22);background:rgba(113,130,137,.05)}
+.btn-n.on{color:#fff;border-color:#718289;background:rgba(113,130,137,.35)}
+.bdg-g{background:rgba(16,185,129,.13);color:#34D399;border:1px solid rgba(16,185,129,.22);border-radius:99px;padding:2px 9px;font-size:.66rem;font-weight:500;display:inline-flex;align-items:center;gap:4px}
+.bdg-g a{color:#34D399;text-decoration:none}.bdg-g a:hover{text-decoration:underline}
+.bdg-m{background:rgba(245,158,11,.13);color:#FCD34D;border:1px solid rgba(245,158,11,.22);border-radius:99px;padding:2px 9px;font-size:.66rem;font-weight:500;display:inline-flex;align-items:center;gap:4px}
+.bdg-m a{color:#FCD34D;text-decoration:none}.bdg-m a:hover{text-decoration:underline}
+.btn-cta{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:7px;font-size:.72rem;font-weight:600;text-decoration:none;color:#be8f63;border:1px solid rgba(190,143,99,.30);background:rgba(190,143,99,.09);transition:all .18s}
+.btn-cta:hover{background:rgba(190,143,99,.22);border-color:rgba(190,143,99,.55);color:#fffff3}
+#nm{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.82);backdrop-filter:blur(8px);align-items:center;justify-content:center}
+#nm.open{display:flex}
+.mbox{background:linear-gradient(135deg,#0f2c38 0%,#0a2330 100%);border:1px solid rgba(190,143,99,.28);border-radius:16px;padding:32px;width:100%;max-width:440px;box-shadow:0 30px 80px rgba(0,0,0,.7);animation:mIn .24s cubic-bezier(.34,1.56,.64,1)}
+@keyframes mIn{from{opacity:0;transform:scale(.92) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.ifield{background:rgba(6,30,40,.9);border:1px solid rgba(113,130,137,.28);border-radius:8px;color:#fffff3;padding:10px 14px;font-family:'DM Sans',sans-serif;font-size:.9rem;width:100%;transition:border-color .2s;outline:none}
+.ifield:focus{border-color:#be8f63}
+.ifield::placeholder{color:rgba(113,130,137,.5)}
+.ilabel{font-size:.72rem;font-weight:600;color:#718289;margin-bottom:5px;display:block;letter-spacing:.04em;text-transform:uppercase}
+.cpill{background:rgba(190,143,99,.12);border:1px solid rgba(190,143,99,.28);color:#be8f63;padding:4px 14px;border-radius:99px;font-family:'Syne',sans-serif;font-size:.76rem;font-weight:700}
+.ftab{padding:5px 14px;border-radius:99px;font-size:.74rem;font-weight:600;cursor:pointer;transition:all .16s;border:1px solid transparent;color:#718289;background:transparent;font-family:'DM Sans',sans-serif}
+.ftab:hover{color:#fffff3;border-color:rgba(255,255,243,.14)}
+.ftab.on{background:rgba(190,143,99,.15);border-color:rgba(190,143,99,.35);color:#be8f63}
+.mdiv{grid-column:1/-1;font-family:'Syne',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.10em;text-transform:uppercase;color:#be8f63;opacity:.8;display:flex;align-items:center;gap:10px;margin-top:8px}
+.mdiv::after{content:'';flex:1;height:1px;background:rgba(190,143,99,.20)}
+.ldot{width:7px;height:7px;background:#10B981;border-radius:50%;box-shadow:0 0 6px #10B981;animation:pd 2s infinite;display:inline-block}
+@keyframes pd{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+#toast{position:fixed;bottom:24px;right:24px;z-index:9000;background:#0f2c38;border:1px solid rgba(190,143,99,.25);border-radius:10px;padding:11px 17px;font-size:.82rem;color:#fffff3;box-shadow:0 8px 30px rgba(0,0,0,.5);opacity:0;transform:translateY(8px);transition:opacity .26s,transform .26s;pointer-events:none}
+#toast.show{opacity:1;transform:translateY(0)}
+.desc{font-size:.77rem;line-height:1.55;color:#718289;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#nameBtn{display:flex;align-items:center;gap:8px;padding:9px 18px;border-radius:10px;color:#be8f63;border:1px solid rgba(190,143,99,.35);background:rgba(190,143,99,.10);font-size:.83rem;font-weight:600;font-family:'Syne',sans-serif;cursor:pointer;transition:background .18s;white-space:nowrap}
+#nameBtn:hover{background:rgba(190,143,99,.22)}
+.logo-img{height:42px;width:42px;border-radius:10px;object-fit:cover;border:1px solid rgba(190,143,99,.30);background:rgba(190,143,99,.08)}
+</style>
 </head>
 <body>
-
-<!-- MODAL -->
-<div id="nameModal" role="dialog" aria-modal="true">
-  <div class="modal-box">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
-      <div style="width:38px;height:38px;border-radius:10px;background:rgba(232,67,26,.15);border:1px solid rgba(232,67,26,.25);display:flex;align-items:center;justify-content:center;font-size:1.1rem">👤</div>
+<div id="nm" role="dialog" aria-modal="true">
+  <div class="mbox">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:22px">
+      <div style="width:40px;height:40px;border-radius:10px;background:rgba(190,143,99,.15);border:1px solid rgba(190,143,99,.30);display:flex;align-items:center;justify-content:center;font-size:1.2rem">👤</div>
       <div>
-        <h2 class="fd" style="color:#fff;font-size:1.1rem;font-weight:700">Qual é o seu nome?</h2>
-        <p style="color:#4B5563;font-size:.76rem;margin-top:2px">Identifique-se para marcar presença</p>
+        <h2 class="fd" style="color:#fffff3;font-size:1.1rem;font-weight:700">Qual é o seu nome?</h2>
+        <p style="color:#718289;font-size:.76rem;margin-top:2px">Identifique-se para marcar presença nos eventos</p>
       </div>
     </div>
-    <input id="nameInput" type="text" class="input-field" placeholder="Ex: Jessica" maxlength="40" autocomplete="off" style="margin-bottom:18px"/>
+    <label class="ilabel" for="ni">Seu nome *</label>
+    <input id="ni" type="text" class="ifield" placeholder="Ex: Jaqueline Amaro" maxlength="50" autocomplete="off" style="margin-bottom:14px"/>
+    <label class="ilabel" for="li">LinkedIn (opcional — para networking 🤝)</label>
+    <input id="li" type="url" class="ifield" placeholder="https://linkedin.com/in/seu-perfil" maxlength="200" autocomplete="off" style="margin-bottom:20px"/>
     <div style="display:flex;gap:10px">
-      <button id="cancelBtn" style="flex:1;padding:10px;border-radius:8px;font-size:.85rem;font-weight:600;color:#64748B;border:1px solid rgba(255,255,255,.10);background:transparent;cursor:pointer;font-family:'DM Sans',sans-serif;transition:border-color .16s" onmouseover="this.style.borderColor='rgba(255,255,255,.25)'" onmouseout="this.style.borderColor='rgba(255,255,255,.10)'">Cancelar</button>
-      <button id="saveBtn" style="flex:1;padding:10px;border-radius:8px;font-size:.85rem;font-weight:700;color:#fff;border:none;background:#E8431A;cursor:pointer;font-family:'DM Sans',sans-serif;box-shadow:0 4px 14px rgba(232,67,26,.25);transition:background .16s" onmouseover="this.style.background='#FF5A2E'" onmouseout="this.style.background='#E8431A'">Salvar</button>
+      <button onclick="closeM()" style="flex:1;padding:10px;border-radius:8px;font-size:.85rem;font-weight:600;color:#718289;border:1px solid rgba(113,130,137,.25);background:transparent;cursor:pointer;font-family:'DM Sans',sans-serif">Cancelar</button>
+      <button onclick="doSave()" style="flex:1;padding:10px;border-radius:8px;font-size:.85rem;font-weight:700;color:#0a303d;border:none;background:#be8f63;cursor:pointer;font-family:'DM Sans',sans-serif;box-shadow:0 4px 14px rgba(190,143,99,.28)">Salvar</button>
     </div>
   </div>
 </div>
-
-<!-- TOAST -->
 <div id="toast"></div>
-
-<!-- HEADER -->
-<header class="header-glow" style="border-bottom:1px solid rgba(255,255,255,.05);position:relative;z-index:10">
-  <div style="max-width:1100px;margin:0 auto;padding:22px 20px 14px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px">
-    <div>
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-        <span style="color:#E8431A;font-size:1.1rem">◆</span>
-        <h1 class="fd" style="color:#fff;font-size:1.55rem;font-weight:800;letter-spacing:-.02em">Agenda CRM, CX &amp; Growth</h1>
+<header class="hbg" style="position:relative;z-index:10">
+  <div style="max-width:1100px;margin:0 auto;padding:18px 20px 14px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px">
+    <div style="display:flex;align-items:center;gap:14px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <img src="Frame_1.png" alt="Mulheres de CRM" class="logo-img" onerror="this.style.display='none'"/>
+        <img src="logocrmacademy.jpeg" alt="CRM Academy" class="logo-img" onerror="this.style.display='none'"/>
       </div>
-      <p style="color:#374151;font-size:.82rem;margin-left:22px">Calendário de eventos 2026–2027 para profissionais de marketing, dados e CX</p>
+      <div style="border-left:1px solid rgba(190,143,99,.22);padding-left:14px">
+        <h1 class="fd" style="color:#fffff3;font-size:1.5rem;font-weight:800;letter-spacing:-.02em">Agenda CRM, CX &amp; Growth</h1>
+        <p style="color:#718289;font-size:.80rem;margin-top:2px">Calendário 2026–2027 · Mulheres de CRM &amp; CRM Academy Community</p>
+      </div>
     </div>
-    <button id="nameBtn" style="display:flex;align-items:center;gap:8px;padding:9px 18px;border-radius:10px;color:#E8431A;border:1px solid rgba(232,67,26,.30);background:rgba(232,67,26,.09);font-size:.83rem;font-weight:600;font-family:'Syne',sans-serif;cursor:pointer;transition:background .18s;white-space:nowrap" onmouseover="this.style.background='rgba(232,67,26,.18)'" onmouseout="this.style.background='rgba(232,67,26,.09)'">
-      <span id="nIcon">👤</span><span id="nText">Definir meu nome</span>
-    </button>
+    <button id="nameBtn"><span id="nIcon">👤</span><span id="nText">Definir meu nome</span></button>
   </div>
   <div style="max-width:1100px;margin:0 auto;padding:0 20px 12px;display:flex;flex-wrap:wrap;align-items:center;gap:10px">
-    <span class="counter-pill" id="cTotal">0 eventos</span>
-    <span class="counter-pill" id="cGoing">0 marcados como 'vou'</span>
-    <span style="display:flex;align-items:center;gap:6px;font-size:.74rem;font-weight:600;color:rgba(52,211,153,.75)"><span class="ldot"></span> Tempo real</span>
+    <span class="cpill" id="cTotal">0 eventos</span>
+    <span class="cpill" id="cGoing">0 marcados como 'vou'</span>
+    <span style="display:flex;align-items:center;gap:6px;font-size:.74rem;font-weight:600;color:rgba(110,231,183,.8)"><span class="ldot"></span> Tempo real</span>
   </div>
   <div style="max-width:1100px;margin:0 auto;padding:0 20px 16px">
     <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:7px">
-      <span style="font-size:.66rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#374151;margin-right:2px">Área</span>
-      <div id="filterArea" style="display:flex;flex-wrap:wrap;gap:5px">
-        <button class="ftab active" data-a="all">Todas</button>
-      </div>
+      <span style="font-size:.64rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#718289;margin-right:2px">Área</span>
+      <div id="fa" style="display:flex;flex-wrap:wrap;gap:5px"><button class="ftab on" data-a="all">Todas</button></div>
     </div>
     <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px">
-      <span style="font-size:.66rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#374151;margin-right:2px">Tipo</span>
-      <div id="filterTipo" style="display:flex;flex-wrap:wrap;gap:5px">
-        <button class="ftab active" data-t="all">Todos</button>
-      </div>
+      <span style="font-size:.64rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#718289;margin-right:2px">Tipo</span>
+      <div id="ft" style="display:flex;flex-wrap:wrap;gap:5px"><button class="ftab on" data-t="all">Todos</button></div>
     </div>
   </div>
 </header>
-
-<!-- MAIN -->
 <main style="max-width:1100px;margin:0 auto;padding:28px 20px;position:relative;z-index:10">
-  <div id="eventsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px"></div>
+  <div id="grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px"></div>
 </main>
-
-<footer style="border-top:1px solid rgba(255,255,255,.04);padding:20px;text-align:center">
-  <p style="color:rgba(100,116,139,.35);font-size:.73rem">Agenda CRM, CX &amp; Growth · Dados embutidos + Supabase Realtime · 2026–2027</p>
+<footer style="border-top:1px solid rgba(190,143,99,.12);padding:20px;text-align:center">
+  <p style="color:rgba(113,130,137,.4);font-size:.73rem">Agenda CRM, CX &amp; Growth · Mulheres de CRM &amp; CRM Academy · Supabase Realtime · 2026–2027</p>
 </footer>
-
 <script>
-/* ═══════════════════════════════════════
-   🔑 SUPABASE
-═══════════════════════════════════════ */
-const SUPABASE_URL = "https://rwkbpafpniwzvlkfngag.supabase.co";
-const SUPABASE_KEY = "sb_publishable_41a2jzlzwZgFrdMJ6UpDXQ_jysf69_C";
-
-/* ═══════════════════════════════════════
-   📋 DADOS EMBUTIDOS (sem fetch, funciona em qualquer lugar)
-═══════════════════════════════════════ */
-const EVENTOS_RAW = [
+const SUPABASE_URL="https://rwkbpafpniwzvlkfngag.supabase.co";
+const SUPABASE_KEY="sb_publishable_41a2jzlzwZgFrdMJ6UpDXQ_jysf69_C";
+const EV=[
+  // ── MAIO ──
+  {data:"29/05/2026",mes:"Maio",tipo:"Conferência",area:"Social Media",nome:"Conexão Social Media 2026 – SP",desc:"Maior evento de social media do mundo (3 dias, SP). Tendências, criadores, algoritmos, estratégias de conteúdo e posicionamento de carreira.",preco:"R$947",link:"https://www.conexaosocialmedia.com/"},
+  {data:"28/05/2026",mes:"Maio",tipo:"Webinar",area:"CRM",nome:"Webinar: A loja tá pronta, e agora?",desc:"Quais dados da sua loja você já tem e não está usando. Erros de estrutura que travam a retenção. Jornadas pós-compra que fazem o cliente voltar.",preco:"Gratuito",link:"https://www.linkedin.com/events/7465382918056468480?viewAsMember=true"},
   {data:"27/05/2026",mes:"Maio",tipo:"Meetup",area:"CRM",nome:"Grow with Braze – São Paulo ⭐",desc:"Evento exclusivo e gratuito da Braze em SP: marketing em escala, retenção, campanhas multicanal e cases de marcas que cresceram com a plataforma.",preco:"Gratuito (RSVP)",link:"https://globalevents.braze.com/grow-with-braze-sao-paulo/"},
-  {data:"28/05/2026",mes:"Maio",tipo:"Webinar",area:"CRM",nome:"Webinar: A loja tá pronta, e agora?",desc:"Quais dados da sua loja você já tem e provavelmente não está usando. Os erros de estrutura que travam qualquer estratégia de retenção. Jornadas pós-compra que fazem o cliente voltar.",preco:"Gratuito",link:"https://www.linkedin.com/events/7465382918056468480?viewAsMember=true"},
-  {data:"29/05/2026",mes:"Maio",tipo:"Conferência",area:"Social Media",nome:"Conexão Social Media 2026 – SP",desc:"Maior evento de social media do mundo (3 dias, SP). Tendências, criadores, algoritmos, estratégias de conteúdo e posicionamento de carreira.",preco:"Consultar",link:"https://www.conexaosocialmedia.com/"},
-  {data:"Contínuo – ano todo",mes:"Ano todo",tipo:"Webinar",area:"CRM",nome:"Salesforce Webinars Brasil (recorrente)",desc:"Webinars regulares e gratuitos da Salesforce sobre CRM, automação de marketing, atendimento ao cliente e IA aplicada a vendas.",preco:"Gratuito",link:"https://www.salesforce.com/br/events/webinars/"},
-  {data:"Contínuo – ano todo",mes:"Ano todo",tipo:"Webinar",area:"Marketing Digital",nome:"EBAC Webinars de Marketing (recorrente)",desc:"Série contínua de webinars e workshops gratuitos online sobre growth marketing, social media, branding, copy e automação.",preco:"Gratuito",link:"https://ebaconline.com.br/webinars/marketing"},
-  {data:"02/06/2026",mes:"Junho",tipo:"Ferramenta",area:"Inovação / Tech",nome:"Microsoft Build 2026 (online gratuito)",desc:"Conferência anual de desenvolvimento da Microsoft. Conteúdo gratuito online sobre IA, Copilot, Azure e ferramentas para times de produto e marketing tech.",preco:"Gratuito (online)",link:"https://www.eventosdemarketing.com.br/evento/microsoft-build-2026-online"},
-  {data:"02/06/2026",mes:"Junho",tipo:"Summit",area:"E-commerce",nome:"ECBR Summit IA – SP",desc:"Summit de e-commerce focado em inteligência artificial: automação, personalização, recomendação de produtos e CRM com dados em tempo real.",preco:"Acessível (consultar)",link:"https://eventos.ecommercebrasil.com.br/"},
+  {data:"Contínuo",mes:"Ano todo",tipo:"Webinar",area:"CRM",nome:"Salesforce Webinars Brasil (recorrente)",desc:"Webinars regulares e gratuitos da Salesforce sobre CRM, automação de marketing, atendimento ao cliente e IA aplicada a vendas.",preco:"Gratuito",link:"https://www.salesforce.com/br/events/webinars/"},
+  {data:"Contínuo",mes:"Ano todo",tipo:"Webinar",area:"Marketing Digital",nome:"EBAC Webinars de Marketing (recorrente)",desc:"Série contínua de webinars e workshops gratuitos sobre growth, social media, branding, copy e automação de marketing.",preco:"Gratuito",link:"https://ebaconline.com.br/webinars/marketing"},
+  // ── JUNHO ──
+  {data:"02/06/2026",mes:"Junho",tipo:"Ferramenta",area:"Inovação / Tech",nome:"Microsoft Build 2026 (online gratuito)",desc:"Conferência anual da Microsoft com conteúdo gratuito online sobre IA, Copilot, Azure e ferramentas para times de produto e marketing tech.",preco:"Gratuito (online)",link:"https://www.eventosdemarketing.com.br/evento/microsoft-build-2026-online"},
+  {data:"02/06/2026",mes:"Junho",tipo:"Summit",area:"E-commerce",nome:"ECBR Summit IA – SP",desc:"Summit de e-commerce focado em IA: automação, personalização, recomendação de produtos e CRM com dados em tempo real.",preco:"Consultar",link:"https://eventos.ecommercebrasil.com.br/"},
   {data:"03/06/2026",mes:"Junho",tipo:"Ferramenta",area:"CRM",nome:"Salesforce Connections 2026 (live stream)",desc:"Evento anual da Salesforce em Chicago focado em marketing, commerce e CRM. Transmissão gratuita via Salesforce+: IA, dados e jornada do cliente.",preco:"Gratuito (streaming)",link:"https://www.salesforce.com/connections/"},
-  {data:"08/06/2026",mes:"Junho",tipo:"Conferência",area:"Inovação / Tech",nome:"Web Summit Rio 2026 – RJ",desc:"Maior evento de tecnologia da América Latina. 30k+ participantes, 1.500 startups, 600 investidores. IA, fintechs, inovação e networking global.",preco:"R$942 – R$7.094",link:"https://rio.websummit.com/pt-br/"},
+  {data:"08 a 11/06/2026",mes:"Junho",tipo:"Conferência",area:"Inovação / Tech",nome:"Web Summit Rio 2026 – RJ",desc:"Maior evento de tecnologia da América Latina. 30k+ participantes, 1.500 startups, 600 investidores. IA, fintechs, inovação e networking global.",preco:"R$595 – R$7.495",link:"https://rio.websummit.com/pt-br/"},
   {data:"09 a 18/06/2026",mes:"Junho",tipo:"Webinar",area:"Inovação / Tech",nome:"Google Startup School: Agentic AI (online)",desc:"Programa online e gratuito do Google para founders e profissionais de growth: IA agêntica, automação de processos e aplicações práticas.",preco:"Gratuito",link:"https://www.eventosdemarketing.com.br/evento/google-startup-school-agentic-ai-online"},
   {data:"10/06/2026",mes:"Junho",tipo:"Meetup",area:"CRM",nome:"Conversations 2026 Brasil – CX Live (online)",desc:"Evento ao vivo online focado em CX, atendimento ao cliente e CRM. Networking com profissionais de customer experience e relacionamento.",preco:"Gratuito",link:"https://www.eventosdemarketing.com.br/evento/conversations-2026-brasil-live-online"},
-  {data:"16/06/2026",mes:"Junho",tipo:"Imersão",area:"E-commerce",nome:"ECBR Imersão Belo Horizonte / MG",desc:"Imersão regional ECBR em BH com estratégias práticas de e-commerce, marketing digital e growth para times de MG e região.",preco:"Acessível (consultar)",link:"https://eventos.ecommercebrasil.com.br/"},
-  {data:"28 a 30/07/2026",mes:"Julho",tipo:"Conferência",area:"E-commerce",nome:"Fórum E-Commerce Brasil 2026 – SP",desc:"Maior evento de e-commerce da América Latina. 45k profissionais, 3 dias, Anhembi SP. Marketplace, CRM, IA, logística, growth e liderança.",preco:"R$300 – R$1.500 (aprox.)",link:"https://eventos.ecommercebrasil.com.br/forum"},
-  {data:"04 a 06/08/2026",mes:"Agosto",tipo:"Feira",area:"Marketing Digital",nome:"Brazil Promotion 2026 – SP",desc:"22ª edição da maior feira de marketing promocional do Brasil. Ativações, brindes, trade marketing, PDV e inovação. Expo Center Norte, SP.",preco:"R$210 (aprox.)",link:"https://brazilpromotion.com.br/"},
-  {data:"19 ou 20/08/2026",mes:"Agosto",tipo:"Conferência",area:"E-commerce",nome:"Pós Fórum ECBR 2026 – SP",desc:"Evento de continuidade ao Fórum ECBR com conteúdo estratégico avançado e networking qualificado entre líderes de e-commerce.",preco:"Acessível (consultar)",link:"https://eventos.ecommercebrasil.com.br/"},
-  {data:"24 e 25/08/2026",mes:"Agosto",tipo:"Conferência",area:"Marketing Digital",nome:"Content Experience 2026 – SP",desc:"Principal evento de marketing de conteúdo do Brasil. SEO, IA, dados, jornada de compra e estratégia editorial. Foco analítico e técnico.",preco:"R$500 – R$2.500 (aprox.)",link:"https://contentexperience.com.br/"},
-  {data:"26 a 28/08/2026",mes:"Agosto",tipo:"Summit",area:"Inovação / Tech",nome:"Startup Summit 2026 – Florianópolis",desc:"Maior evento de inovação do Brasil (Floripa). 10k pessoas, 200 palestrantes. Growth, product-market fit, go-to-market, startups e investidores.",preco:"R$400 – R$900 (aprox.)",link:"https://www.startupsummit.com.br/"},
-  {data:"01/09/2026",mes:"Setembro",tipo:"Conferência",area:"E-commerce",nome:"ECBR Conferência Indústria Digital",desc:"Conferência ECBR para o setor industrial: digitalização, canais DTC, omnichannel e transformação digital na indústria.",preco:"Acessível (consultar)",link:"https://eventos.ecommercebrasil.com.br/"},
-  {data:"10 a 12/09/2026",mes:"Setembro",tipo:"Festival",area:"Growth",nome:"Hotmart FIRE 2026 – Belo Horizonte",desc:"Maior festival de marketing digital, empreendedorismo e creator economy da América Latina. 3 dias, 5 palcos, 140+ palestrantes em BH.",preco:"R$600 – R$2.500 (aprox.)",link:"https://fire.hotmart.com/"},
-  {data:"10/09/2026",mes:"Setembro",tipo:"Summit",area:"E-commerce",nome:"Wake Summit 2026 – SP",desc:"Summit para times de e-commerce, marketing, CRM e tech. Dados, personalização, retenção e LTV. Cases práticos com inteligência de dados.",preco:"R$400 – R$1.200 (aprox.)",link:"https://wakesummit.com.br/"},
-  {data:"15 a 17/09/2026",mes:"Setembro",tipo:"Ferramenta",area:"CRM",nome:"Salesforce Dreamforce 2026 (streaming gratuito)",desc:"Maior evento Salesforce do mundo (San Francisco, EUA). Streaming gratuito via Salesforce+: IA, Agentforce, CRM, marketing cloud e liderança.",preco:"Gratuito (streaming)",link:"https://www.salesforce.com/dreamforce/"},
-  {data:"15/09/2026",mes:"Setembro",tipo:"Summit",area:"E-commerce",nome:"ECBR Summit Logística",desc:"Summit de logística para e-commerce: fulfillment, last mile, automação e experiência de entrega como diferencial competitivo.",preco:"Acessível (consultar)",link:"https://eventos.ecommercebrasil.com.br/"},
-  {data:"Set/2026",mes:"Setembro",tipo:"Conferência",area:"Marketing Digital",nome:"Digitalks Expo 2026 – SP",desc:"Principal evento de marketing digital, inovação e tech do Brasil. 14k+ participantes, 180 palestrantes, growth, dados, IA e e-commerce.",preco:"Consultar",link:"https://digitalks.com.br/expo/"},
+  {data:"16/06/2026",mes:"Junho",tipo:"Imersão",area:"E-commerce",nome:"ECBR Imersão Belo Horizonte / MG",desc:"Imersão regional ECBR em BH com estratégias práticas de e-commerce, marketing digital e growth para times de MG e região.",preco:"Consultar",link:"https://eventos.ecommercebrasil.com.br/"},
+  {data:"17 e 18/06/2026",mes:"Junho",tipo:"Summit",area:"Inovação / Tech",nome:"Minas Summit 2026 – Belo Horizonte",desc:"Principal evento de inovação corporativa de MG com projeção nacional. Startups, investidores e executivos em dois dias de conteúdo e rodadas de negócios.",preco:"A partir de R$247",link:"https://www.eventosdemarketing.com.br/evento/minas-summit-2026-belo-horizonte"},
+  {data:"18 e 19/06/2026",mes:"Junho",tipo:"Conferência",area:"Marketing Digital",nome:"DigiMarCon Brazil 2026 – SP",desc:"Conferência internacional de marketing digital focada em performance, automação, mídias pagas, IA, social media e análise de dados.",preco:"Consultar",link:"https://digimarconbrazil.com.br/"},
+  {data:"18 a 20/06/2026",mes:"Junho",tipo:"Summit",area:"Inovação / Tech",nome:"Summit de IA Brasil 2026 – Joinville/SC",desc:"3ª edição do maior evento brasileiro dedicado à IA. Reúne líderes e especialistas no Ágora Tech Park para discutir os impactos da IA nos negócios e na sociedade.",preco:"Consultar",link:"https://www.eventosdemarketing.com.br/evento/summit-de-inteligencia-artificial-2026-joinville"},
+  {data:"Jun/2026",mes:"Junho",tipo:"Summit",area:"CX",nome:"Diálogos CX – São Paulo",desc:"Evento de networking e conteúdo focado em Customer Experience, estratégias de CX, dados do cliente e transformação da experiência do consumidor.",preco:"Consultar",link:"https://lu.ma/dialogosacx"},
+  {data:"Jun/2026",mes:"Junho",tipo:"Summit",area:"Growth",nome:"GA Summit 2026 – Gestão do Amanhã",desc:"Summit de gestão, liderança e crescimento com foco em estratégia, inovação e performance para times e organizações de alto desempenho.",preco:"Consultar",link:"https://lp.gestaodoamanha.com.br/ga-summit-26v3/"},
+  // ── JULHO ──
+  {data:"22 e 23/07/2026",mes:"Julho",tipo:"Summit",area:"Inovação / Tech",nome:"A.I. Summit Brasil 2026 – São Paulo",desc:"Reúne líderes, executivos e especialistas para discutir o lado estratégico da IA. Foco em soluções reais, impacto, regulação e o futuro da IA nos negócios.",preco:"Consultar",link:"https://www.eventosdemarketing.com.br/"},
+  {data:"28 a 30/07/2026",mes:"Julho",tipo:"Conferência",area:"E-commerce",nome:"Fórum E-Commerce Brasil 2026 – SP",desc:"Maior evento de e-commerce da América Latina. 45k profissionais, 3 dias, Distrito Anhembi SP. Marketplace, CRM, IA, logística e growth.",preco:"R$300 – R$1.500",link:"https://eventos.ecommercebrasil.com.br/forum"},
+  {data:"30/07 a 02/08/2026",mes:"Julho",tipo:"Summit",area:"Inovação / Tech",nome:"Innovation Meeting BR 2026 – Porto de Galinhas/PE",desc:"Reúne lideranças de tecnologia e inovação num ambiente de troca qualificada. Apresentação de soluções, cases e tendências em integração estratégica.",preco:"Consultar",link:"https://www.eventosdemarketing.com.br/"},
+  // ── AGOSTO ──
+  {data:"04 e 05/08/2026",mes:"Agosto",tipo:"Ferramenta",area:"Inovação / Tech",nome:"Gartner Segurança & Gestão de Risco 2026 – SP",desc:"Combina pesquisa proprietária com insights globais para CISOs e líderes. Foco em cibersegurança, governança e gestão de riscos com especialistas internacionais.",preco:"Consultar",link:"https://www.gartner.com/"},
+  {data:"04 a 06/08/2026",mes:"Agosto",tipo:"Feira",area:"Marketing Digital",nome:"Brazil Promotion 2026 – SP",desc:"22ª edição da maior feira de marketing promocional do Brasil. Ativações, brindes, trade marketing, PDV e inovação. Expo Center Norte, SP.",preco:"R$210",link:"https://brazilpromotion.com.br/"},
+  {data:"04 a 05/08/2026",mes:"Agosto",tipo:"Summit",area:"Inovação / Tech",nome:"Rio Innovation Week 2026 – RJ",desc:"Megaevento de inovação que reúne startups, investidores e grandes empresas no Rio de Janeiro.",preco:"Consultar",link:"https://www.eventosdemarketing.com.br/"},
+  {data:"04 a 05/08/2026",mes:"Agosto",tipo:"Conferência",area:"Marketing Digital",nome:"Mundo RD Station 2026 – Florianópolis",desc:"Evento da RD Station focado em marketing digital, CRM, automação e vendas. Cases práticos, tendências e networking entre times de marketing e growth.",preco:"R$1.995",link:"https://www.eventosdemarketing.com.br/evento/mundo-rd-station-florianopolis"},
+  {data:"19 ou 20/08/2026",mes:"Agosto",tipo:"Conferência",area:"E-commerce",nome:"Pós Fórum ECBR 2026 – SP",desc:"Evento de continuidade ao Fórum ECBR com conteúdo estratégico avançado e networking qualificado entre líderes de e-commerce.",preco:"Consultar",link:"https://eventos.ecommercebrasil.com.br/"},
+  {data:"24 e 25/08/2026",mes:"Agosto",tipo:"Conferência",area:"Marketing Digital",nome:"Content Experience 2026 – SP",desc:"Principal evento de marketing de conteúdo do Brasil. SEO, IA, dados, jornada de compra e estratégia editorial. Foco analítico e técnico.",preco:"R$500 – R$2.500",link:"https://contentexperience.com.br/"},
+  {data:"24 a 26/08/2026",mes:"Agosto",tipo:"Conferência",area:"Inovação / Tech",nome:"Febraban Tech 2026 – SP",desc:"Principal evento de tecnologia e inovação do setor financeiro no Brasil. IA, open finance, regulação e modernização financeira. Distrito Anhembi, SP.",preco:"Consultar",link:"https://febrabantech.febraban.org.br/"},
+  {data:"26 a 28/08/2026",mes:"Agosto",tipo:"Summit",area:"Inovação / Tech",nome:"Startup Summit 2026 – Florianópolis",desc:"Maior evento de inovação do Brasil (Floripa). 10k pessoas, 200 palestrantes. Growth, product-market fit, go-to-market, startups e investidores.",preco:"Consultar",link:"https://www.startupsummit.com.br/"},
+  // ── SETEMBRO ──
+  {data:"01/09/2026",mes:"Setembro",tipo:"Conferência",area:"E-commerce",nome:"ECBR Conferência Indústria Digital",desc:"Conferência ECBR para o setor industrial: digitalização, canais DTC, omnichannel e transformação digital na indústria.",preco:"Consultar",link:"https://eventos.ecommercebrasil.com.br/"},
+  {data:"10 a 12/09/2026",mes:"Setembro",tipo:"Festival",area:"Growth",nome:"Hotmart FIRE 2026 – Belo Horizonte",desc:"Maior festival de marketing digital, empreendedorismo e creator economy da América Latina. 3 dias, 5 palcos, 140+ palestrantes em BH.",preco:"R$600 – R$2.500",link:"https://fire.hotmart.com/"},
+  {data:"10/09/2026",mes:"Setembro",tipo:"Summit",area:"E-commerce",nome:"Wake Summit 2026 – SP",desc:"Summit para times de e-commerce, marketing, CRM e tech. Dados, personalização, retenção e LTV. Cases práticos com inteligência de dados.",preco:"R$400 – R$1.200",link:"https://www.wakesummit.tech/"},
+  {data:"15 a 17/09/2026",mes:"Setembro",tipo:"Ferramenta",area:"CRM",nome:"Salesforce Dreamforce 2026 – Streaming gratuito",desc:"Maior evento Salesforce do mundo (San Francisco, EUA). Streaming gratuito via Salesforce+: IA, Agentforce, CRM, marketing cloud e liderança.",preco:"Gratuito (streaming)",link:"https://www.salesforce.com/dreamforce/"},
+  {data:"15/09/2026",mes:"Setembro",tipo:"Summit",area:"E-commerce",nome:"ECBR Summit Logística",desc:"Summit de logística para e-commerce: fulfillment, last mile, automação e experiência de entrega como diferencial competitivo.",preco:"Consultar",link:"https://eventos.ecommercebrasil.com.br/"},
+  {data:"Set/2026",mes:"Setembro",tipo:"Conferência",area:"Marketing Digital",nome:"Arena Digitalks 2026 – SP",desc:"Ponto de encontro do mercado digital reunindo negócios, inovação e criatividade. Palestras e debates sobre o futuro da comunicação digital.",preco:"Consultar",link:"https://digitalks.com.br/expo/"},
   {data:"Set/2026",mes:"Setembro",tipo:"Ferramenta",area:"Marketing Digital",nome:"HubSpot INBOUND 2026 (streaming online)",desc:"Maior evento de marketing, vendas e CRM da HubSpot. Transmissão online gratuita com keynotes, estratégias de IA, automação e growth.",preco:"Gratuito (streaming)",link:"https://www.inbound.com/"},
-  {data:"21 a 24/09/2026",mes:"Setembro",tipo:"Conferência",area:"Multi-área",nome:"ECBR Experience Brasil",desc:"Congresso imersivo ECBR em formato experiencial reunindo e-commerce, marketing, CX e tecnologia. Foco em estratégia e networking.",preco:"Acessível (consultar)",link:"https://eventos.ecommercebrasil.com.br/"},
+  {data:"21 a 24/09/2026",mes:"Setembro",tipo:"Conferência",area:"Multi-área",nome:"ECBR Experience Brasil",desc:"Congresso imersivo ECBR reunindo e-commerce, marketing, CX e tecnologia em formato experiencial. Foco em estratégia e networking.",preco:"Consultar",link:"https://eventos.ecommercebrasil.com.br/"},
+  {data:"23 e 24/09/2026",mes:"Setembro",tipo:"Conferência",area:"CX",nome:"CONAREC 2026 – SP ⭐",desc:"24ª edição do maior evento de CX do mundo. 15.000+ congressistas, 500 palestrantes, 120+ painéis. Transamerica Expo Center, São Paulo.",preco:"Consultar",link:"https://conarec.com.br/"},
+  {data:"24 e 25/09/2026",mes:"Setembro",tipo:"Summit",area:"E-commerce",nome:"MeliXP 2026 – SP (Mercado Livre Experience)",desc:"10ª edição do maior evento para empreendedores do Mercado Livre. São Paulo Expo — 2 dias de conteúdo e networking de alto nível.",preco:"Consultar",link:"https://mercadolivreexperience.com.br/"},
   {data:"30/09 e 01/10/2026",mes:"Setembro",tipo:"Summit",area:"E-commerce",nome:"D2C Summit 2026 – SP",desc:"Evento de e-commerce D2C da Nuvemshop. 2 dias, Anhembi SP. Cases de marcas, aquisição, fidelização, branding e escalabilidade no DTC.",preco:"A partir de R$479",link:"https://d2csummit.com.br/"},
-  {data:"06/10/2026",mes:"Outubro",tipo:"Summit",area:"E-commerce",nome:"ECBR Summit Pagamentos",desc:"Summit sobre pagamentos no e-commerce: novos meios, open finance, fraude, checkout otimizado e soluções financeiras inovadoras.",preco:"Acessível (consultar)",link:"https://eventos.ecommercebrasil.com.br/"},
-  {data:"Out/2026",mes:"Outubro",tipo:"Summit",area:"CRM",nome:"CRM Zummit 2026 – Florianópolis",desc:"O maior evento de CRM e vendas B2B do Brasil. 4 trilhas simultâneas, keynotes internacionais. Prospecção, negociação, automação e liderança.",preco:"R$600 – R$1.500 (aprox.)",link:"https://crmzummit.com.br/"},
-  {data:"20/10/2026",mes:"Outubro",tipo:"Imersão",area:"E-commerce",nome:"ECBR Imersão Porto Alegre / RS",desc:"Imersão regional ECBR em Porto Alegre/RS para profissionais de e-commerce e marketing digital do Sul do Brasil.",preco:"Acessível (consultar)",link:"https://eventos.ecommercebrasil.com.br/"},
-  {data:"10/11/2026",mes:"Novembro",tipo:"Imersão",area:"E-commerce",nome:"ECBR Imersão Recife / PE",desc:"Imersão regional ECBR em Recife/PE para profissionais de e-commerce e marketing digital do Nordeste.",preco:"Acessível (consultar)",link:"https://eventos.ecommercebrasil.com.br/"},
-  {data:"17/11/2026",mes:"Novembro",tipo:"Summit",area:"E-commerce",nome:"ECBR Summit Plataformas",desc:"Summit sobre plataformas de e-commerce: headless commerce, integrações, escolha de stack tecnológico e tendências de arquitetura.",preco:"Acessível (consultar)",link:"https://eventos.ecommercebrasil.com.br/"},
-  {data:"Jan/2027",mes:"Janeiro",tipo:"Conferência",area:"E-commerce",nome:"NRF Retail's Big Show 2027 – New York",desc:"Maior evento de varejo do mundo (Nova York). Tendências globais, IA no varejo, CX, omnichannel, personalização e tecnologia de ponta.",preco:"US$1.500+ (presencial)",link:"https://nrfbigshow.nrf.com/"},
-  {data:"Mar/2027",mes:"Março",tipo:"Conferência",area:"CRM",nome:"RD Summit 2027 – Brasil",desc:"Principal evento de marketing digital, CRM e vendas do Brasil retorna reformulado em 2027. Growth, IA, dados, automação e estratégia.",preco:"R$1.000 – R$3.000 (aprox.)",link:"https://rdsummit.com.br/"},
-];
-
-// Normalizar: gerar ID slugificado
-function slugify(s){ return (s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"_").replace(/^_|_$/g,"").slice(0,80); }
-const events = EVENTOS_RAW.map(e=>({...e, id:slugify(e.nome)}));
-
-/* ═══════════════════════════════════════
-   ESTADO
-═══════════════════════════════════════ */
-let sb       = null;
-let presence = {};
-let userName = localStorage.getItem("agenda_username")||"";
-let pending  = null;
-let fArea    = "all";
-let fTipo    = "all";
-
-/* ═══════════════════════════════════════
-   UTILS
-═══════════════════════════════════════ */
-function esc(s){ return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
-let _tt; function toast(msg,icon="✓"){ const el=document.getElementById("toast"); el.textContent=`${icon}  ${msg}`; el.classList.add("show"); clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove("show"),2800); }
-
-/* ═══════════════════════════════════════
-   NOME / MODAL
-═══════════════════════════════════════ */
-function syncBtn(){ const ic=document.getElementById("nIcon"),tx=document.getElementById("nText"); if(userName){ic.textContent="👋";tx.textContent=`Olá, ${userName}`;}else{ic.textContent="👤";tx.textContent="Definir meu nome";} }
-function openModal(){ document.getElementById("nameInput").value=userName||""; document.getElementById("nameModal").classList.add("open"); setTimeout(()=>document.getElementById("nameInput").focus(),80); }
-function closeModal(){ document.getElementById("nameModal").classList.remove("open"); }
-document.getElementById("nameBtn").addEventListener("click",openModal);
-document.getElementById("cancelBtn").addEventListener("click",()=>{ closeModal(); pending=null; });
-document.getElementById("saveBtn").addEventListener("click",doSave);
-document.getElementById("nameInput").addEventListener("keydown",e=>{ if(e.key==="Enter") doSave(); });
-document.getElementById("nameModal").addEventListener("click",e=>{ if(e.target===document.getElementById("nameModal")){ closeModal(); pending=null; } });
-function doSave(){ const v=document.getElementById("nameInput").value.trim(); if(!v){ document.getElementById("nameInput").focus(); return; } userName=v; localStorage.setItem("agenda_username",v); syncBtn(); closeModal(); toast(`Nome salvo: ${v}`,"👋"); if(pending){ const p=pending; pending=null; handlePresence(p.id,p.s); } }
-
-/* ═══════════════════════════════════════
-   SUPABASE
-═══════════════════════════════════════ */
-function initSB(){ try{ sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY); return true; }catch(e){ console.error(e); return false; } }
-async function loadPresence(){
-  if(!sb){ loadLocal(); return; }
-  try{
-    const {data,error}=await sb.from("presencas").select("*");
-    if(error) throw error;
-    presence={};
-    (data||[]).forEach(r=>{ if(!presence[r.evento_id]) presence[r.evento_id]=[]; presence[r.evento_id].push({name:r.nome,status:r.status}); });
-  }catch(e){ console.error(e); loadLocal(); }
-}
-function loadLocal(){ try{ presence=JSON.parse(localStorage.getItem("agenda_presence")||"{}"); }catch{ presence={}; } }
-function saveLocal(){ localStorage.setItem("agenda_presence",JSON.stringify(presence)); }
-async function upsertP(id,name,status){
-  _setL(id,name,status); renderBadges(); updateCounters();
-  if(!sb){ saveLocal(); return; }
-  try{ const {error}=await sb.from("presencas").upsert({evento_id:id,nome:name,status},{onConflict:"evento_id,nome"}); if(error) throw error; }catch(e){ console.error(e); toast("Erro ao salvar 😕","⚠️"); }
-}
-async function deleteP(id,name){
-  _delL(id,name); renderBadges(); updateCounters();
-  if(!sb){ saveLocal(); return; }
-  try{ const {error}=await sb.from("presencas").delete().eq("evento_id",id).eq("nome",name); if(error) throw error; }catch(e){ console.error(e); }
-}
-function _setL(id,name,status){ if(!presence[id]) presence[id]=[]; const i=presence[id].findIndex(p=>p.name===name); if(i>=0) presence[id][i].status=status; else presence[id].push({name,status}); }
-function _delL(id,name){ if(presence[id]) presence[id]=presence[id].filter(p=>p.name!==name); }
-function subscribeRT(){
-  if(!sb) return;
-  sb.channel("presencas_rt").on("postgres_changes",{event:"*",schema:"public",table:"presencas"},payload=>{
-    const {eventType:et,new:n,old:o}=payload;
-    if(et==="INSERT"||et==="UPDATE") _setL(n.evento_id,n.nome,n.status);
-    if(et==="DELETE") _delL(o.evento_id,o.nome);
-    renderBadges(); updateCounters();
-  }).subscribe();
-}
-
-/* ═══════════════════════════════════════
-   PRESENÇA
-═══════════════════════════════════════ */
-function handlePresence(id,s){ if(!userName){ pending={id,s}; openModal(); return; } if(s==="nao"){ deleteP(id,userName); toast("Presença removida","✕"); }else{ upsertP(id,userName,s); toast(s==="vou"?"Marcado 'Vou'! 🎉":"Marcado 'Talvez' 🤔",s==="vou"?"✓":"🛈"); } syncButtons(id); }
-function myStatus(id){ if(!userName||!presence[id]) return null; return (presence[id].find(p=>p.name===userName)||{}).status||null; }
-
-/* ═══════════════════════════════════════
-   ESTILO
-═══════════════════════════════════════ */
-function areaClass(a){ const v=(a||"").toLowerCase(); if(v.includes("crm")) return "area-crm"; if(v.includes("cx")) return "area-cx"; if(v.includes("growth")) return "area-growth"; if(v.includes("e-commerce")||v.includes("ecommerce")) return "area-ecommerce"; if(v.includes("market")) return "area-marketing"; if(v.includes("inova")||v.includes("tech")) return "area-inovacao"; if(v.includes("social")) return "area-social"; if(v.includes("multi")) return "area-multi"; return "area-default"; }
-function priceClass(p){ const v=(p||"").toLowerCase(); if(v.includes("stream")) return "preco-stream"; if(v.includes("gratuit")) return "preco-free"; if(v.includes("consultar")||v.includes("acess")) return "preco-consul"; return "preco-pago"; }
-function priceIcon(p){ const v=(p||"").toLowerCase(); if(v.includes("stream")) return "📺"; if(v.includes("gratuit")) return "🆓"; if(v.includes("consultar")||v.includes("acess")) return "💬"; return "💰"; }
-
-/* ═══════════════════════════════════════
-   RENDER
-═══════════════════════════════════════ */
-function cardHTML(evt){
-  const st=myStatus(evt.id);
-  const going=(presence[evt.id]||[]).filter(p=>p.status==="vou");
-  const maybe=(presence[evt.id]||[]).filter(p=>p.status==="talvez");
-  const badges=[...going.map(p=>`<span class="badge-going">✓ ${esc(p.name)}</span>`),...maybe.map(p=>`<span class="badge-maybe">? ${esc(p.name)}</span>`)].join("");
-  const ac=areaClass(evt.area), pc=priceClass(evt.preco), pi=priceIcon(evt.preco);
-  return `
-<article class="event-card" style="border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:11px" data-id="${evt.id}">
-  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;flex-wrap:wrap">
-    <div style="display:flex;flex-wrap:wrap;gap:5px">
-      <span class="tipo-pill ${ac}">${esc(evt.area)}</span>
-      <span class="tipo-pill tipo-plain">${esc(evt.tipo)}</span>
-    </div>
-    <div style="display:flex;gap:4px;flex-shrink:0">
-      <button class="btn-pres btn-going${st==="vou"?" active":""}" data-id="${evt.id}" data-s="vou">✓ Vou</button>
-      <button class="btn-pres btn-maybe${st==="talvez"?" active":""}" data-id="${evt.id}" data-s="talvez">🛈 Talvez</button>
-      <button class="btn-pres btn-no${st==="nao"?" active":""}" data-id="${evt.id}" data-s="nao">✕ Não</button>
-    </div>
-  </div>
-  <h3 class="fd" style="color:#F1F5F9;font-size:.96rem;font-weight:700;line-height:1.35">
-    <a href="${esc(evt.link)}" target="_blank" rel="noopener" style="color:#F1F5F9;transition:color .18s;text-decoration:none" onmouseover="this.style.color='#FF5A2E'" onmouseout="this.style.color='#F1F5F9'">${esc(evt.nome)}</a>
-  </h3>
-  <p class="desc">${esc(evt.desc)}</p>
-  <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px">
-    <span style="font-size:.73rem;color:#374151;display:flex;align-items:center;gap:3px">📅 ${esc(evt.data)}</span>
-    <span class="tipo-pill ${pc}" style="font-size:.66rem">${pi} ${esc(evt.preco)}</span>
-  </div>
-  <div style="display:flex;flex-wrap:wrap;gap:5px;min-height:0" data-badges="${evt.id}">${badges}</div>
-</article>`;
-}
-
-function getFiltered(){ return events.filter(e=>{ const okA=fArea==="all"||(e.area||"").toLowerCase().includes(fArea); const okT=fTipo==="all"||(e.tipo||"").toLowerCase()===fTipo; return okA&&okT; }); }
-
-const MONTH_ORDER=["Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Janeiro","Março","Ano todo"];
-function renderEvents(){
-  const grid=document.getElementById("eventsGrid");
-  const list=getFiltered();
-  if(!list.length){ grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#374151"><p style="font-size:2rem;margin-bottom:10px">📭</p><p class="fd" style="font-weight:600">Nenhum evento encontrado</p></div>`; return; }
-  const byMonth={};
-  list.forEach(e=>{ const m=e.mes||"Outros"; if(!byMonth[m]) byMonth[m]=[]; byMonth[m].push(e); });
-  const sorted=Object.keys(byMonth).sort((a,b)=>{ const ia=MONTH_ORDER.indexOf(a),ib=MONTH_ORDER.indexOf(b); return (ia===-1?99:ia)-(ib===-1?99:ib); });
-  let html="";
-  sorted.forEach(m=>{ html+=`<div class="month-divider" style="grid-column:1/-1">${m}</div>`; html+=byMonth[m].map(cardHTML).join(""); });
-  grid.innerHTML=html;
-  grid.querySelectorAll(".btn-pres").forEach(btn=>btn.addEventListener("click",()=>handlePresence(btn.dataset.id,btn.dataset.s)));
-}
-
-function renderBadges(){ events.forEach(evt=>{ const a=document.querySelector(`[data-badges="${evt.id}"]`); if(!a) return; const going=(presence[evt.id]||[]).filter(p=>p.status==="vou"); const maybe=(presence[evt.id]||[]).filter(p=>p.status==="talvez"); a.innerHTML=[...going.map(p=>`<span class="badge-going">✓ ${esc(p.name)}</span>`),...maybe.map(p=>`<span class="badge-maybe">? ${esc(p.name)}</span>`)].join(""); syncButtons(evt.id); }); }
-function syncButtons(id){ const st=myStatus(id); document.querySelectorAll(`[data-id="${id}"][data-s]`).forEach(btn=>btn.classList.toggle("active",btn.dataset.s===st)); }
-function updateCounters(){ document.getElementById("cTotal").textContent=`${events.length} eventos`; const n=Object.values(presence).flat().filter(p=>p.status==="vou").length; document.getElementById("cGoing").textContent=`${n} marcado${n!==1?"s":""} como 'vou'`; }
-
-function buildFilters(){
-  const areas=[...new Set(events.map(e=>e.area).filter(Boolean))].sort();
-  const tipos=[...new Set(events.map(e=>e.tipo).filter(Boolean))].sort();
-  const fa=document.getElementById("filterArea");
-  areas.forEach(a=>{ const b=document.createElement("button"); b.className="ftab"; b.dataset.a=a.toLowerCase(); b.textContent=a; fa.appendChild(b); });
-  fa.querySelectorAll(".ftab").forEach(b=>b.addEventListener("click",()=>{ fa.querySelectorAll(".ftab").forEach(x=>x.classList.remove("active")); b.classList.add("active"); fArea=b.dataset.a; renderEvents(); }));
-  const ft=document.getElementById("filterTipo");
-  tipos.forEach(t=>{ const b=document.createElement("button"); b.className="ftab"; b.dataset.t=t.toLowerCase(); b.textContent=t; ft.appendChild(b); });
-  ft.querySelectorAll(".ftab").forEach(b=>b.addEventListener("click",()=>{ ft.querySelectorAll(".ftab").forEach(x=>x.classList.remove("active")); b.classList.add("active"); fTipo=b.dataset.t; renderEvents(); }));
-}
-
-/* ═══════════════════════════════════════
-   INIT
-═══════════════════════════════════════ */
-async function init(){
-  syncBtn(); initSB();
-  await loadPresence();
-  buildFilters(); renderEvents(); updateCounters(); subscribeRT();
-}
-document.addEventListener("DOMContentLoaded", init);
+  // ── OUTUBRO ──
+  {data:"Out/2026",mes:"Outubro",tipo:"Conferência",area:"Growth",nome:"Growth Conference 2026 – SP",desc:"Principal evento de Growth, Marketing e Vendas B2B do Brasil. Estratégias de aquisição, retenção, IA e escalabilidade de receita.",preco:"Consultar",link:"https://growthconf.com.br/"},
+  {data:"06/10/2026",mes:"Outubro",tipo:"Summit",area:"E-commerce",nome:"ECBR Summit Pagamentos",desc:"Summit sobre pagamentos no e-commerce: novos meios, open finance, fraude, checkout otimizado e soluções financeiras inovadoras.",preco:"Consultar",link:"https://eventos.ecommercebrasil.com.br/"},
+  {data:"Out/2026",mes:"Outubro",tipo:"Summit",area:"CRM",nome:"CRM Zummit 2026 – Florianópolis",desc:"O maior evento de CRM e vendas B2B do Brasil. 4 trilhas, keynotes internacionais. Prospecção, negociação, automação e liderança.",preco:"R$600 – R$1.500",link:"https://crmzummit.com.br/"},
+  {data:"15 a 18/10/2026",mes:"Outubro",tipo:"Feira",area:"Multi-área",nome:"Feira do Empreendedor SEBRAE 2026 – SP",desc:"Evento do SEBRAE para pequenos e médios empreendedores. Workshops sobre marketing e vendas online, consultorias e oportunidades de negócio. São Paulo Expo.",preco:"Consultar",link:"https://feiradoempreendedor.sebraesp.com.br/"},
+  {data:"20/10/2026",mes:"Outubro",tipo:"Imersão",area:"E-commerce",nome:"ECBR Imersão Porto Alegre / RS",desc:"Imersão regional ECBR em Porto Alegre para profissionais de e-commerce e marketing digital do Sul do Brasil.",preco:"Consultar",link:"https://eventos.ecommercebrasil.com.br/"},
+  {data:"Out/2026",mes:"Outubro",tipo:"Festival",area:"Inovação / Tech",nome:"AI Festival 2026 – SP",desc:"Festival de Inteligência Artificial aplicada a negócios. IA generativa, automação, dados e estratégias práticas para times de marketing e produto.",preco:"Consultar",link:"https://www.listadeeventos.com.br/evento/ai-festival-inteligencia-artificial-aplicada-negocios-sao-paulo"},
+  {data:"30 e 31/10/2026",mes:"Outubro",tipo:"Summit",area:"Inovação / Tech",nome:"AI Brasil Experience 2026 – SP",desc:"Dois dias de imersão nas aplicações reais da IA no mercado brasileiro. Cases, ferramentas e metodologias que mostram como a IA transforma negócios na prática.",preco:"Consultar",link:"https://www.eventosdemarketing.com.br/"},
+  {data:"Data a confirmar",mes:"Outubro",tipo:"Summit",area:"E-commerce",nome:"Varejo Summit 2026 – SP",desc:"O maior evento para varejistas do Brasil. Estratégias de retenção, crescimento de receita e como grandes marcas estão crescendo no varejo físico e digital.",preco:"Consultar",link:"https://varejosummit.com/"},
+  // ── NOVEMBRO ──
+  {data:"10/11/2026",mes:"Novembro",tipo:"Imersão",area:"E-commerce",nome:"ECBR Imersão Recife / PE",desc:"Imersão regional ECBR em Recife para profissionais de e-commerce e marketing digital do Nordeste.",preco:"Consultar",link:"https://eventos.ecommercebrasil.com.br/"},
+  {data:"13 e 14/11/2026",mes:"Novembro",tipo:"Summit",area:"Marketing Digital",nome:"SEO Summit 2026 – SP",desc:"Maior evento de SEO do Brasil. Palestrantes internacionais, IA aplicada ao SEO, marketing orgânico, branding e cases de sucesso. By Conversion.",preco:"Consultar",link:"https://seosummit.com.br/"},
+  {data:"17/11/2026",mes:"Novembro",tipo:"Summit",area:"E-commerce",nome:"ECBR Summit Plataformas",desc:"Summit sobre plataformas de e-commerce: headless commerce, integrações, escolha de stack tecnológico e tendências de arquitetura.",preco:"Consultar",link:"https://eventos.ecommercebrasil.com.br/"},
+  // ── 2027 ──
+  {data:"Jan/2027",mes:"2027",tipo:"Conferência",area:"E-commerce",nome:"NRF Retail's Big Show 2027 – New York",desc:"Maior evento de varejo do mundo (Nova York). Tendências globais, IA no varejo, CX, omnichannel, personalização e tecnologia de ponta.",preco:"US$1.500+ (presencial)",link:"https://nrfbigshow.nrf.com/"},
+  {data:"Mar/2027",mes:"2027",tipo:"Conferência",area:"CRM",nome:"RD Summit 2027 – Brasil",desc:"O RD dá uma pausa em 2026 para evoluir e retorna em 2027 ainda mais relevante. Principal evento de marketing digital, CRM e vendas do Brasil.",preco:"R$1.000 – R$3.000",link:"https://rdsummit.rdstation.com/"},
+  {data:"2027",mes:"2027",tipo:"Summit",area:"Marketing Digital",nome:"CMO Summit 2027 – SP",desc:"Maior evento de líderes de marketing do Brasil. CMOs e diretores debatem IA, branding, CRM, dados e estratégias de crescimento.",preco:"Consultar",link:"https://cmosummit.com.br/"},
+  {data:"2027",mes:"2027",tipo:"Summit",area:"Inovação / Tech",nome:"Gramado Summit 2027 – RS",desc:"Hub de inovação, startups e empreendedorismo em Gramado. Tecnologia, marketing digital e networking no ecossistema nacional.",preco:"Consultar",link:"https://www.gramadosummit.com.br/"},
+  {data:"Data a confirmar",mes:"2027",tipo:"Conferência",area:"Marketing Digital",nome:"MMA Impact Brasil 2027 – SP",desc:"O encontro onde marketing, criatividade e tecnologia se conectam. Líderes e marcas discutem como a IA está transformando cultura, varejo e entretenimento.",preco:"Consultar",link:"https://www.mmaglobal.com/"},
+]; 
+  function slug(s){return(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"_").replace(/^_|_$/g,"").slice(0,80)}
+function esc(s){return(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+const events=EV.map(e=>({...e,id:slug(e.nome)}));
+let sb=null,presence={},uName=localStorage.getItem("au")||"",uLI=localStorage.getItem("ali")||"",pending=null,fA="all",fT="all";
+let _tt;function toast(m,i="✓"){const el=document.getElementById("toast");el.textContent=`${i}  ${m}`;el.classList.add("show");clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove("show"),2800)}
+function syncBtn(){const ic=document.getElementById("nIcon"),tx=document.getElementById("nText");if(uName){ic.textContent="👋";tx.textContent=`Olá, ${uName}`}else{ic.textContent="👤";tx.textContent="Definir meu nome"}}
+document.getElementById("nameBtn").onclick=openM;
+function openM(){document.getElementById("ni").value=uName||"";document.getElementById("li").value=uLI||"";document.getElementById("nm").classList.add("open");setTimeout(()=>document.getElementById("ni").focus(),80)}
+function closeM(){document.getElementById("nm").classList.remove("open");pending=null}
+document.getElementById("nm").onclick=e=>{if(e.target===document.getElementById("nm"))closeM()};
+document.getElementById("ni").onkeydown=e=>{if(e.key==="Enter")document.getElementById("li").focus()};
+document.getElementById("li").onkeydown=e=>{if(e.key==="Enter")doSave()};
+function doSave(){const v=document.getElementById("ni").value.trim();if(!v){document.getElementById("ni").focus();return}uName=v;uLI=document.getElementById("li").value.trim();localStorage.setItem("au",v);localStorage.setItem("ali",uLI);syncBtn();closeM();toast(`Nome salvo: ${v}`,"👋");if(pending){const p=pending;pending=null;handleP(p.id,p.s)}}
+function initSB(){try{sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);return true}catch(e){console.error(e);return false}}
+async function loadP(){if(!sb){loadLocal();return}try{const{data,error}=await sb.from("presencas").select("*");if(error)throw error;presence={};(data||[]).forEach(r=>{if(!presence[r.evento_id])presence[r.evento_id]=[];presence[r.evento_id].push({name:r.nome,status:r.status,li:r.linkedin||""})})}catch(e){console.error(e);loadLocal()}}
+function loadLocal(){try{presence=JSON.parse(localStorage.getItem("ap")||"{}")}catch{presence={}}}
+function saveLocal(){localStorage.setItem("ap",JSON.stringify(presence))}
+async function upsertP(id,name,status,li){_setL(id,name,status,li);renderBadges();updateC();if(!sb){saveLocal();return}try{const{error}=await sb.from("presencas").upsert({evento_id:id,nome:name,status,linkedin:li||""},{onConflict:"evento_id,nome"});if(error)throw error}catch(e){console.error(e);toast("Erro ao salvar 😕","⚠️")}}
+async function delP(id,name){_delL(id,name);renderBadges();updateC();if(!sb){saveLocal();return}try{const{error}=await sb.from("presencas").delete().eq("evento_id",id).eq("nome",name);if(error)throw error}catch(e){console.error(e)}}
+function _setL(id,n,s,li){if(!presence[id])presence[id]=[];const i=presence[id].findIndex(p=>p.name===n);if(i>=0){presence[id][i].status=s;presence[id][i].li=li||""}else presence[id].push({name:n,status:s,li:li||""})}
+function _delL(id,n){if(presence[id])presence[id]=presence[id].filter(p=>p.name!==n)}
+function subRT(){if(!sb)return;sb.channel("p_rt").on("postgres_changes",{event:"*",schema:"public",table:"presencas"},payload=>{const{eventType:et,new:n,old:o}=payload;if(et==="INSERT"||et==="UPDATE")_setL(n.evento_id,n.nome,n.status,n.linkedin);if(et==="DELETE")_delL(o.evento_id,o.nome);renderBadges();updateC()}).subscribe()}
+function handleP(id,s){if(!uName){pending={id,s};openM();return}if(s==="nao"){delP(id,uName);toast("Presença removida","✕")}else{upsertP(id,uName,s,uLI);toast(s==="vou"?"Marcado 'Vou'! 🎉":"Marcado 'Talvez' 🤔",s==="vou"?"✓":"🛈")}syncBtns(id)}
+function myS(id){if(!uName||!presence[id])return null;return(presence[id].find(p=>p.name===uName)||{}).status||null}
+function aC(a){const v=(a||"").toLowerCase();if(v.includes("crm"))return"a-crm";if(v.includes("cx"))return"a-cx";if(v.includes("growth"))return"a-growth";if(v.includes("e-commerce")||v.includes("ecommerce"))return"a-ecom";if(v.includes("market"))return"a-mkt";if(v.includes("inova")||v.includes("tech"))return"a-tech";if(v.includes("social"))return"a-social";if(v.includes("multi"))return"a-multi";return"a-def"}
+function pC(p){const v=(p||"").toLowerCase();if(v.includes("stream"))return"p-stream";if(v.includes("gratuit"))return"p-free";if(v.includes("consultar")||v.includes("acess"))return"p-ask";return"p-paid"}
+function pI(p){const v=(p||"").toLowerCase();if(v.includes("stream"))return"📺";if(v.includes("gratuit"))return"🆓";if(v.includes("consultar")||v.includes("acess"))return"💬";return"💰"}
+function bdg(p,cls){const nm=p.li?`<a href="${esc(p.li)}" target="_blank" rel="noopener" title="Ver LinkedIn">${esc(p.name)} 🔗</a>`:esc(p.name);return`<span class="${cls}">${cls==="bdg-g"?"✓":"?"} ${nm}</span>`}
+function cardHTML(e){const st=myS(e.id);const go=(presence[e.id]||[]).filter(p=>p.status==="vou");const mb=(presence[e.id]||[]).filter(p=>p.status==="talvez");const badges=[...go.map(p=>bdg(p,"bdg-g")),...mb.map(p=>bdg(p,"bdg-m"))].join("");return`<article class="event-card" data-id="${e.id}"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;flex-wrap:wrap"><div style="display:flex;flex-wrap:wrap;gap:5px"><span class="pill ${aC(e.area)}">${esc(e.area)}</span><span class="pill t-plain">${esc(e.tipo)}</span></div><div style="display:flex;gap:4px;flex-shrink:0"><button class="btn-pres btn-g${st==="vou"?" on":""}" data-id="${e.id}" data-s="vou">✓ Vou</button><button class="btn-pres btn-m${st==="talvez"?" on":""}" data-id="${e.id}" data-s="talvez">🛈 Talvez</button><button class="btn-pres btn-n${st==="nao"?" on":""}" data-id="${e.id}" data-s="nao">✕ Não</button></div></div><h3 class="fd" style="color:#fffff3;font-size:.95rem;font-weight:700;line-height:1.35">${esc(e.nome)}</h3><p class="desc">${esc(e.desc)}</p><div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px"><span style="font-size:.72rem;color:#718289">📅 ${esc(e.data)}</span><span class="pill ${pC(e.preco)}" style="font-size:.64rem">${pI(e.preco)} ${esc(e.preco)}</span>${e.link?`<a href="${esc(e.link)}" target="_blank" rel="noopener" class="btn-cta">🔗 Ver evento ↗</a>`:""}</div><div style="display:flex;flex-wrap:wrap;gap:5px;min-height:0" data-badges="${e.id}">${badges}</div></article>`}
+const MO=["Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Janeiro","Março","2027","Ano todo"];
+function getFilt(){return events.filter(e=>{const okA=fA==="all"||(e.area||"").toLowerCase().includes(fA);const okT=fT==="all"||(e.tipo||"").toLowerCase()===fT;return okA&&okT})}
+function renderAll(){const grid=document.getElementById("grid"),list=getFilt();if(!list.length){grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#718289"><p style="font-size:2rem;margin-bottom:10px">📭</p><p class="fd" style="font-weight:600">Nenhum evento encontrado</p></div>`;return}const byM={};list.forEach(e=>{const m=e.mes||"Outros";if(!byM[m])byM[m]=[];byM[m].push(e)});const sorted=Object.keys(byM).sort((a,b)=>{const ia=MO.indexOf(a),ib=MO.indexOf(b);return(ia===-1?99:ia)-(ib===-1?99:ib)});let html="";sorted.forEach(m=>{html+=`<div class="mdiv" style="grid-column:1/-1">${m==="2027"?"→ 2027":m}</div>`;html+=byM[m].map(cardHTML).join("")});grid.innerHTML=html;grid.querySelectorAll(".btn-pres").forEach(b=>b.addEventListener("click",()=>handleP(b.dataset.id,b.dataset.s)))}
+function renderBadges(){events.forEach(e=>{const a=document.querySelector(`[data-badges="${e.id}"]`);if(!a)return;const go=(presence[e.id]||[]).filter(p=>p.status==="vou");const mb=(presence[e.id]||[]).filter(p=>p.status==="talvez");a.innerHTML=[...go.map(p=>bdg(p,"bdg-g")),...mb.map(p=>bdg(p,"bdg-m"))].join("");syncBtns(e.id)})}
+function syncBtns(id){const st=myS(id);document.querySelectorAll(`[data-id="${id}"][data-s]`).forEach(b=>b.classList.toggle("on",b.dataset.s===st))}
+function updateC(){document.getElementById("cTotal").textContent=`${events.length} eventos`;const n=Object.values(presence).flat().filter(p=>p.status==="vou").length;document.getElementById("cGoing").textContent=`${n} marcado${n!==1?"s":""} como 'vou'`}
+function buildFilters(){const areas=[...new Set(events.map(e=>e.area).filter(Boolean))].sort();const tipos=[...new Set(events.map(e=>e.tipo).filter(Boolean))].sort();const fa=document.getElementById("fa"),ft=document.getElementById("ft");areas.forEach(a=>{const b=document.createElement("button");b.className="ftab";b.dataset.a=a.toLowerCase();b.textContent=a;fa.appendChild(b)});fa.querySelectorAll(".ftab").forEach(b=>b.addEventListener("click",()=>{fa.querySelectorAll(".ftab").forEach(x=>x.classList.remove("on"));b.classList.add("on");fA=b.dataset.a;renderAll()}));tipos.forEach(t=>{const b=document.createElement("button");b.className="ftab";b.dataset.t=t.toLowerCase();b.textContent=t;ft.appendChild(b)});ft.querySelectorAll(".ftab").forEach(b=>b.addEventListener("click",()=>{ft.querySelectorAll(".ftab").forEach(x=>x.classList.remove("on"));b.classList.add("on");fT=b.dataset.t;renderAll()}))}
+async function init(){syncBtn();initSB();await loadP();buildFilters();renderAll();updateC();subRT()}
+document.addEventListener("DOMContentLoaded",init);
 </script>
 </body>
 </html>
