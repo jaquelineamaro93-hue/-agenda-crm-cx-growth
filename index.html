@@ -125,8 +125,7 @@ h1,h2,h3,.fd{font-family:'Syne',sans-serif}
 </main>
 <footer style="border-top:1px solid rgba(190,143,99,.12);padding:20px;text-align:center">
   <p style="color:rgba(113,130,137,.4);font-size:.73rem">Agenda CRM, CX &amp; Growth · Mulheres de CRM &amp; CRM Academy · Supabase Realtime · 2026–2027</p>
-</footer>
-<script>
+</footer> <script>
 const SUPABASE_URL="https://rwkbpafpniwzvlkfngag.supabase.co";
 const SUPABASE_KEY="sb_publishable_41a2jzlzwZgFrdMJ6UpDXQ_jysf69_C";
 const EV=[
@@ -193,8 +192,7 @@ const EV=[
   {data:"2027",mes:"2027",tipo:"Summit",area:"Marketing Digital",nome:"CMO Summit 2027 – SP",desc:"Maior evento de líderes de marketing do Brasil. CMOs e diretores debatem IA, branding, CRM, dados e estratégias de crescimento.",preco:"Consultar",link:"https://cmosummit.com.br/"},
   {data:"2027",mes:"2027",tipo:"Summit",area:"Inovação / Tech",nome:"Gramado Summit 2027 – RS",desc:"Hub de inovação, startups e empreendedorismo em Gramado. Tecnologia, marketing digital e networking no ecossistema nacional.",preco:"Consultar",link:"https://www.gramadosummit.com.br/"},
   {data:"Data a confirmar",mes:"2027",tipo:"Conferência",area:"Marketing Digital",nome:"MMA Impact Brasil 2027 – SP",desc:"O encontro onde marketing, criatividade e tecnologia se conectam. Líderes e marcas discutem como a IA está transformando cultura, varejo e entretenimento.",preco:"Consultar",link:"https://www.mmaglobal.com/"},
-]; 
-  function slug(s){return(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"_").replace(/^_|_$/g,"").slice(0,80)}
+]; function slug(s){return(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"_").replace(/^_|_$/g,"").slice(0,80)}
 function esc(s){return(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
 const events=EV.map(e=>({...e,id:slug(e.nome)}));
 let sb=null,presence={},uName=localStorage.getItem("au")||"",uLI=localStorage.getItem("ali")||"",pending=null,fA="all",fT="all";
