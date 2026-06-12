@@ -542,7 +542,9 @@ function getFilt(){return allEvents.filter(e=>{
     ||(fP==="free"&&(pr.includes("gratuit")||pr.includes("stream")))
     ||(fP==="paid"&&!pr.includes("gratuit")&&!pr.includes("stream")&&!pr.includes("consultar"))
     ||(fP==="stream"&&pr.includes("stream"));
-  const okMe=fMe==="all"||(myS(e.id)===fMe);
+  // "Vou"/"Talvez" mostra eventos onde QUALQUER pessoa marcou, não só o usuário
+  const okMe=fMe==="all"
+    ||((presence[e.id]||[]).some(p=>p.status===fMe));
   return okA&&okT&&okP&&okMe;
 })}
 
