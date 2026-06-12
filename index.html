@@ -62,6 +62,10 @@ select.ifield option{background:#0f2c38;color:#f5f9fa}
 .ftab:hover{color:#f5f9fa;border-color:rgba(255,255,243,.14)}
 .ftab.on{background:rgba(190,143,99,.15);border-color:rgba(190,143,99,.35);color:#be8f63}
 .mdiv{grid-column:1/-1;font-family:'Syne',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.10em;text-transform:uppercase;color:#be8f63;opacity:.8;display:flex;align-items:center;gap:10px;margin-top:8px}
+.mdiv-destaque{grid-column:1/-1;font-family:'Syne',sans-serif;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#d4a47a;display:flex;align-items:center;gap:10px;margin-top:4px}
+.mdiv-destaque::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(190,143,99,.5),transparent)}
+.mentoria-card{background:linear-gradient(135deg,#1f3a2a 0%,#162d20 100%) !important;border:1px solid rgba(190,143,99,.45) !important;box-shadow:0 0 24px rgba(190,143,99,.12)}
+.mentoria-card:hover{border-color:rgba(190,143,99,.75) !important;box-shadow:0 8px 32px rgba(190,143,99,.22) !important}
 .mdiv::after{content:'';flex:1;height:1px;background:rgba(190,143,99,.20)}
 .ldot{width:7px;height:7px;background:#10B981;border-radius:50%;box-shadow:0 0 6px #10B981;animation:pd 2s infinite;display:inline-block}
 @keyframes pd{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
@@ -303,6 +307,8 @@ const SUPABASE_URL="https://rwkbpafpniwzvlkfngag.supabase.co";
 const SUPABASE_KEY="sb_publishable_41a2jzlzwZgFrdMJ6UpDXQ_jysf69_C";
 
 const EV_FIXED=[
+  // ── DESTAQUE ──
+  {data:"Últimas vagas — Lista de espera Jun/2027",mes:"Destaque",tipo:"Mentoria",area:"CRM",nome:"🌟 Mentoria de Carreira em CRM – Jaqueline Amaro",desc:"Estagnada/o e quer crescer com estrutura e networking? Construa uma jornada com consciência, gere impacto real, eleve seu posicionamento e tenha direcionamento estratégico em CRM. Próxima turma: Junho/2027.",preco:"Consultar (desconto fora SP)",link:"https://forms.gle/BYHwhvomUQ3Xorz47",whats:"https://api.whatsapp.com/send/?phone=5511986067420&text&type=phone_number&app_absent=0"},
   {data:"29/05/2026",mes:"Maio",tipo:"Conferência",area:"Social Media",nome:"Conexão Social Media 2026 – SP",desc:"Maior evento de social media do mundo (3 dias, SP). Tendências, criadores, algoritmos, estratégias de conteúdo e posicionamento de carreira.",preco:"R$947",link:"https://www.conexaosocialmedia.com/"},
   {data:"28/05/2026",mes:"Maio",tipo:"Webinar",area:"CRM",nome:"Webinar: A loja tá pronta, e agora?",desc:"Quais dados da sua loja você já tem e não está usando. Erros de estrutura que travam a retenção. Jornadas pós-compra que fazem o cliente voltar.",preco:"Gratuito",link:"https://www.linkedin.com/events/7465382918056468480?viewAsMember=true"},
   {data:"27/05/2026",mes:"Maio",tipo:"Meetup",area:"CRM",nome:"Grow with Braze – São Paulo ⭐",desc:"Evento exclusivo e gratuito da Braze em SP: marketing em escala, retenção, campanhas multicanal e cases de marcas que cresceram com a plataforma.",preco:"Gratuito (RSVP)",link:"https://globalevents.braze.com/grow-with-braze-sao-paulo/"},
@@ -509,7 +515,8 @@ function cardHTML(e){
   const mb=(presence[e.id]||[]).filter(p=>p.status==="talvez");
   const badges=[...go.map(p=>bdg(p,"bdg-g")),...mb.map(p=>bdg(p,"bdg-m"))].join("");
   const sugBadge=e.isSuggested?`<span class="new-badge">✨ Sugerido por ${esc(e.sugerido_por||"comunidade")}</span>`:"";
-  return`<article class="event-card${e.isSuggested?" suggested":""}" data-id="${e.id}">
+  const isMentoria=e.tipo==="Mentoria"&&e.nome.includes("Jaqueline");
+return`<article class="event-card${e.isSuggested?" suggested":""}${isMentoria?" mentoria-card":""}" data-id="${e.id}">
 <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;flex-wrap:wrap">
   <div style="display:flex;flex-wrap:wrap;gap:5px">
     <span class="pill ${aC(e.area)}">${esc(e.area)}</span>
@@ -528,12 +535,13 @@ function cardHTML(e){
   <span style="font-size:.72rem;color:#e8f0f3">📅 ${esc(e.data)}</span>
   <span class="pill ${pC(e.preco)}" style="font-size:.64rem">${pI(e.preco)} ${esc(e.preco)}</span>
   ${e.link?`<a href="${esc(e.link)}" target="_blank" rel="noopener" class="btn-cta">🔗 Ver evento ↗</a>`:""}
+  ${e.whats?`<a href="${esc(e.whats)}" target="_blank" rel="noopener" class="btn-cta" style="color:#25D366;border-color:rgba(37,211,102,.35);background:rgba(37,211,102,.09)">💬 WhatsApp</a>`:""}
 </div>
 <div style="display:flex;flex-wrap:wrap;gap:5px;min-height:0" data-badges="${e.id}">${badges}</div>
 </article>`
 }
 
-const MO=["Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro","Janeiro","Fevereiro","Março","Abril","2027","Ano todo"];
+const MO=["Destaque","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro","Janeiro","Fevereiro","Março","Abril","2027","Ano todo"];
 function getFilt(){return allEvents.filter(e=>{
   const okA=fA==="all"||(e.area||"").toLowerCase().includes(fA);
   const okT=fT==="all"||(e.tipo||"").toLowerCase()===fT;
@@ -553,7 +561,10 @@ function renderAll(){
   if(!list.length){grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#718289"><p style="font-size:2rem;margin-bottom:10px">📭</p><p class="fd" style="font-weight:600">Nenhum evento encontrado</p></div>`;return}
   const byM={};list.forEach(e=>{const m=e.mes||"Outros";if(!byM[m])byM[m]=[];byM[m].push(e)});
   const sorted=Object.keys(byM).sort((a,b)=>{const ia=MO.indexOf(a),ib=MO.indexOf(b);return(ia===-1?99:ia)-(ib===-1?99:ib)});
-  let html="";sorted.forEach(m=>{html+=`<div class="mdiv" style="grid-column:1/-1">${m==="2027"?"→ 2027":m}</div>`;html+=byM[m].map(cardHTML).join("")});
+  let html="";sorted.forEach(m=>{
+    const isDestaque=m==="Destaque";
+    const label=m==="2027"?"→ 2027":isDestaque?"✨ Em destaque":m;
+    html+=`<div class="${isDestaque?'mdiv-destaque':'mdiv'}" style="grid-column:1/-1">${label}</div>`;html+=byM[m].map(cardHTML).join("")});
   grid.innerHTML=html;
   grid.querySelectorAll(".btn-pres").forEach(b=>b.addEventListener("click",()=>handleP(b.dataset.id,b.dataset.s)));
 }
