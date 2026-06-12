@@ -332,6 +332,7 @@ const EV_FIXED=[
   {data:"05/08/2026",mes:"Agosto",tipo:"Summit",area:"Growth",nome:"App Growth Summit SP 2026",desc:"Evento gratuito voltado a especialistas em crescimento de apps na América Latina. Foco em otimização de aplicativos, engajamento, monetização e tendências de mobile.",preco:"Gratuito",link:"https://appgrowthsummit.com/events/app-growth-summit-sao-paulo-2026/"},
   {data:"30/07 a 02/08/2026",mes:"Julho",tipo:"Summit",area:"Inovação / Tech",nome:"Innovation Meeting BR 2026 – Porto de Galinhas/PE",desc:"Reúne lideranças de tecnologia e inovação num ambiente de troca qualificada. Apresentação de soluções, cases e tendências em integração estratégica.",preco:"Consultar",link:"https://www.eventosdemarketing.com.br/"},
   {data:"31/07 a 07/08/2026",mes:"Julho",tipo:"Webinar",area:"Growth",nome:"Growth Intelligence 2026 (online gratuito)",desc:"Estratégia de crescimento com dados, IA e experimentação. Programa online e gratuito da MBA USP/Esalq para profissionais de growth e marketing.",preco:"Gratuito",link:"https://www.eventosdemarketing.com.br/evento/growth-intelligence-estrategia-de-crescimento-com-dados-ia-e-experimentacao-online"},
+  {data:"12 e 13/08/2026",mes:"Agosto",tipo:"Summit",area:"Growth",nome:"B2B Summit 2026 – SP",desc:"O maior evento B2B do Brasil. Dois dias de networking, conteúdo e geração de negócios com os maiores líderes do setor. Marketing, vendas e estratégia B2B.",preco:"Consultar",link:"https://b2bsummit.com/"},
   {data:"04 a 06/08/2026",mes:"Agosto",tipo:"Feira",area:"Marketing Digital",nome:"Brazil Promotion 2026 – SP",desc:"22ª edição da maior feira de marketing promocional do Brasil. Ativações, brindes, trade marketing, PDV e inovação. Expo Center Norte, SP.",preco:"R$210",link:"https://brazilpromotion.com.br/"},
   {data:"04 a 05/08/2026",mes:"Agosto",tipo:"Conferência",area:"Marketing Digital",nome:"Mundo RD Station 2026 – Florianópolis",desc:"Evento da RD Station focado em marketing digital, CRM, automação e vendas. Cases práticos, tendências e networking entre times de marketing e growth.",preco:"R$1.995",link:"https://mundo.rdstation.com/"},
   {data:"15 e 16/08/2026",mes:"Agosto",tipo:"Imersão",area:"CRM",nome:"Imersão CRM #4 – DTM (online)",desc:"4ª edição da Imersão CRM com estratégia, dados e jornada do cliente. 2 dias de conteúdo prático e intensivo para profissionais de CRM.",preco:"R$699",link:"https://pay.hotmart.com/N102959481O?off=hos0vfcs&checkoutMode=10"},
@@ -516,7 +517,7 @@ function cardHTML(e){
   const badges=[...go.map(p=>bdg(p,"bdg-g")),...mb.map(p=>bdg(p,"bdg-m"))].join("");
   const sugBadge=e.isSuggested?`<span class="new-badge">✨ Sugerido por ${esc(e.sugerido_por||"comunidade")}</span>`:"";
   const isMentoria=e.tipo==="Mentoria"&&e.nome.includes("Jaqueline");
-return`<article class="event-card${e.isSuggested?" suggested":""}${isMentoria?" mentoria-card":""}" data-id="${e.id}">
+return`<article class="event-card${e.isSuggested?" suggested":""}${isMentoria?" mentoria-card":""}" data-id="${e.id}" id="card-${e.id}">
 <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;flex-wrap:wrap">
   <div style="display:flex;flex-wrap:wrap;gap:5px">
     <span class="pill ${aC(e.area)}">${esc(e.area)}</span>
@@ -564,7 +565,19 @@ function renderAll(){
   let html="";sorted.forEach(m=>{
     const isDestaque=m==="Destaque";
     const label=m==="2027"?"→ 2027":isDestaque?"✨ Em destaque":m;
-    html+=`<div class="${isDestaque?'mdiv-destaque':'mdiv'}" style="grid-column:1/-1">${label}</div>`;html+=byM[m].map(cardHTML).join("")});
+    html+=`<div class="${isDestaque?'mdiv-destaque':'mdiv'}" style="grid-column:1/-1">${label}</div>`;
+    // After destaque divider, inject hot events banner if applicable
+    if(isDestaque){
+      const hot=getHotEvents(3);
+      if(hot.length){
+        html+=`<div style="grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 14px;background:rgba(190,143,99,.08);border:1px solid rgba(190,143,99,.20);border-radius:12px;margin-bottom:4px">
+          <span style="font-size:.72rem;font-weight:700;color:#d4a47a;letter-spacing:.04em;white-space:nowrap">🔥 Mais confirmados:</span>
+          ${hot.map(e=>`<a href="#card-${e.id}" onclick="scrollToCard('${e.id}')" style="font-size:.72rem;font-weight:600;color:#fffff3;background:rgba(190,143,99,.18);border:1px solid rgba(190,143,99,.30);border-radius:99px;padding:3px 11px;text-decoration:none;cursor:pointer;white-space:nowrap">
+            ✓ ${(presence[e.id]||[]).filter(p=>p.status==='vou').length} · ${e.nome.replace(/[🌟⭐]/g,'').trim().slice(0,32)}${e.nome.length>32?'…':''}
+          </a>`).join('')}
+        </div>`;
+      }
+    }html+=byM[m].map(cardHTML).join("")});
   grid.innerHTML=html;
   grid.querySelectorAll(".btn-pres").forEach(b=>b.addEventListener("click",()=>handleP(b.dataset.id,b.dataset.s)));
 }
@@ -587,6 +600,21 @@ allTipos.forEach(t=>{const b=document.createElement("button");b.className="ftab"
   fp.querySelectorAll(".ftab").forEach(b=>b.addEventListener("click",()=>{fp.querySelectorAll(".ftab").forEach(x=>x.classList.remove("on"));b.classList.add("on");fP=b.dataset.p;renderAll()}));
   const fme=document.getElementById("fme");
   fme.querySelectorAll(".ftab").forEach(b=>b.addEventListener("click",()=>{fme.querySelectorAll(".ftab").forEach(x=>x.classList.remove("on"));b.classList.add("on");fMe=b.dataset.me;renderAll()}));
+}
+
+// Returns top N events sorted by "vou" count (excludes destaque/mentoria)
+function getHotEvents(n=3){
+  return allEvents
+    .filter(e=>e.mes!=="Destaque")
+    .map(e=>({...e, votos:(presence[e.id]||[]).filter(p=>p.status==="vou").length}))
+    .filter(e=>e.votos>0)
+    .sort((a,b)=>b.votos-a.votos)
+    .slice(0,n);
+}
+
+function scrollToCard(id){
+  const el=document.querySelector(`[data-id="${id}"]`);
+  if(el){el.scrollIntoView({behavior:"smooth",block:"center"});el.style.outline="2px solid #be8f63";setTimeout(()=>el.style.outline="",1800);}
 }
 
 async function init(){
